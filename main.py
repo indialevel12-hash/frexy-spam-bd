@@ -8,6 +8,7 @@ import ssl
 import random
 import time
 import json
+import httpx
 import aiohttp
 import uvicorn
 from datetime import datetime
@@ -22,9 +23,10 @@ try:
     from xC4 import CrEaTe_ProTo, GeneRaTePk, EnC_Uid, DecodE_HeX, xBunnEr
     from xHeaders import Ua
     from Pb2 import MajoRLoGinrEs_pb2, PorTs_pb2, MajoRLoGinrEq_pb2
+    from login_engine import do_login
 except ModuleNotFoundError as e:
     print(f"\n❌ [ERROR] Required files not found: {e}")
-    print("Ensure xC4.py, xHeaders.py, and Pb2 folder are in the same directory.\n")
+    print("Ensure xC4.py, xHeaders.py, login_engine.py and Pb2 folder are in the same directory.\n")
     sys.exit(1)
 
 app = FastAPI(title="FREXY ULTRA SPAM - Dashboard")
@@ -110,17 +112,6 @@ def load_accounts():
     return accounts
 
 # =================== HEADERS & CRYPTO CONSTANTS ===================
-Hr = {
-    'User-Agent': "Dalvik/2.1.0 (Linux; U; Android 11; ASUS_Z01QD Build/PI)",
-    'Connection': "Keep-Alive",
-    'Accept-Encoding': "gzip",
-    'Content-Type': "application/x-www-form-urlencoded",
-    'Expect': "100-continue",
-    'X-Unity-Version': "2018.4.11f1",
-    'X-GA': "v1 1",
-    'ReleaseVersion': "OB54"
-}
-
 BADGE_VALUES = {
     "s1": 1048576,  # Craftland
     "s2": 32768,    # V-Badge
@@ -138,131 +129,11 @@ BADGE_NAMES = {
 }
 
 # =================== CRYPTO & NETWORK HELPERS ===================
-async def encrypted_proto(encoded_hex):
-    key = b'Yg&tc%DEuh6%Zc^8'
-    iv = b'6oyZDr22E3ychjM%'
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    padded_message = pad(encoded_hex, AES.block_size)
-    return cipher.encrypt(padded_message)
-
 async def encrypt_packet(packet_hex, key, iv):
     cipher = AES.new(key, AES.MODE_CBC, iv)
     packet_bytes = bytes.fromhex(packet_hex)
     padded_packet = pad(packet_bytes, AES.block_size)
     return cipher.encrypt(padded_packet).hex()
-
-async def GeNeRaTeAccEss(uid, password):
-    url = "https://100067.connect.garena.com/oauth/guest/token/grant"
-    data = {
-        "uid": uid,
-        "password": password,
-        "response_type": "token",
-        "client_type": "2",
-        "client_secret": "2ee44819e9b4598845141067b281621874d0d5d7af9d8f7e00c1e54715b7d1e3",
-        "client_id": "100067"
-    }
-    headers = Hr.copy()
-    headers["User-Agent"] = await Ua()
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, headers=headers, data=data) as response:
-            if response.status != 200:
-                return None, None
-            resp_data = await response.json()
-            return resp_data.get("open_id"), resp_data.get("access_token")
-
-async def EncRypTMajoRLoGin(open_id, access_token):
-    major_login = MajoRLoGinrEq_pb2.MajorLogin()
-    major_login.event_time = str(datetime.now())[:-7]
-    major_login.game_name = "free fire"
-    major_login.platform_id = 2
-    major_login.client_version = "1.126.2"
-    major_login.client_version_code = "2024010012"
-    major_login.system_software = "Android OS 11 / API-30"
-    major_login.system_hardware = "Handheld"
-    major_login.device_type = "Handheld"
-    major_login.telecom_operator = "Verizon"
-    major_login.network_operator_a = "Verizon"
-    major_login.network_type = "WIFI"
-    major_login.network_type_a = "WIFI"
-    major_login.screen_width = 1080
-    major_login.screen_height = 2400
-    major_login.screen_dpi = "440"
-    major_login.processor_details = "ARMv8"
-    major_login.cpu_type = 2
-    major_login.cpu_architecture = "64"
-    major_login.memory = 6144
-    major_login.gpu_renderer = "Adreno (TM) 650"
-    major_login.gpu_version = "OpenGL ES 3.2"
-    major_login.graphics_api = "OpenGLES3"
-    major_login.unique_device_id = "Google|34a7dcdf-a7d5-4cb6-8d7e-3b0e448a0c57"
-    major_login.language = "en"
-    major_login.open_id = open_id
-    major_login.open_id_type = "4"
-    major_login.login_open_id_type = 4
-    major_login.access_token = access_token
-    major_login.login_by = 3
-    major_login.platform_sdk_id = 2
-    major_login.origin_platform_type = "4"
-    major_login.primary_platform_type = "4"
-    memory_available = major_login.memory_available
-    memory_available.version = 55
-    memory_available.hidden_value = 81
-    major_login.external_storage_total = 128512
-    major_login.external_storage_available = random.randint(38000, 52000)
-    major_login.internal_storage_total = 110731
-    major_login.internal_storage_available = random.randint(18000, 32000)
-    major_login.game_disk_storage_total = 26628
-    major_login.game_disk_storage_available = random.randint(18000, 25000)
-    major_login.external_sdcard_total_storage = 119234
-    major_login.external_sdcard_avail_storage = random.randint(25000, 60000)
-    major_login.library_path = "/data/app/base.apk"
-    major_login.library_token = "hash|base.apk"
-    major_login.client_using_version = "7428b253defc164018c604a1ebbfebdf"
-    major_login.supported_astc_bitset = 16383
-    major_login.analytics_detail = b"FwQVTgUPX1UaUllDDwcWCRBpWAUOUgsvA1snWlBaO1kFYg=="
-    major_login.loading_time = random.randint(9000, 18000)
-    major_login.release_channel = "android"
-    major_login.channel_type = 3
-    major_login.reg_avatar = 1
-    major_login.if_push = 1
-    major_login.is_vpn = 0
-    major_login.android_engine_init_flag = 110009
-
-    return await encrypted_proto(major_login.SerializeToString())
-
-async def MajorLogin(payload):
-    url = "https://loginbp.ggpolarbear.com/MajorLogin"
-    ssl_context = ssl.create_default_context()
-    ssl_context.check_hostname = False
-    ssl_context.verify_mode = ssl.CERT_NONE
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, data=payload, headers=Hr, ssl=ssl_context) as response:
-            if response.status == 200:
-                return await response.read()
-            return None
-
-async def GetLoginData(base_url, payload, token):
-    url = f"{base_url}/GetLoginData"
-    ssl_context = ssl.create_default_context()
-    ssl_context.check_hostname = False
-    ssl_context.verify_mode = ssl.CERT_NONE
-    headers = Hr.copy()
-    headers['Authorization'] = f"Bearer {token}"
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, data=payload, headers=headers, ssl=ssl_context) as response:
-            if response.status == 200:
-                return await response.read()
-            return None
-
-async def DecRypTMajoRLoGin(MajoRLoGinResPonsE):
-    proto = MajoRLoGinrEs_pb2.MajorLoginRes()
-    proto.ParseFromString(MajoRLoGinResPonsE)
-    return proto
-
-async def DecRypTLoGinDaTa(LoGinDaTa):
-    proto = PorTs_pb2.GetLoginData()
-    proto.ParseFromString(LoGinDaTa)
-    return proto
 
 async def xAuThSTarTuP(TarGeT, token, timestamp, key, iv):
     uid_hex = hex(TarGeT)[2:]
@@ -375,33 +246,19 @@ async def run_unlimited_spam(username: str, accounts, target_uid: str, region: s
                 break
 
             try:
-                open_id, access_token = await GeNeRaTeAccEss(bot_uid, password)
-                if not open_id or not access_token:
-                    add_user_log(username, f"[-] Bot {bot_uid} token grant failed (Check uid/password)", "error")
+                # Using login_engine do_login method
+                login_res = await do_login(bot_uid, password, region)
+                if not login_res:
+                    add_user_log(username, f"[-] Bot {bot_uid} login failed", "error")
                     continue
 
-                pyl = await EncRypTMajoRLoGin(open_id, access_token)
-                login_resp = await MajorLogin(pyl)
-                if not login_resp:
-                    add_user_log(username, f"[-] Bot {bot_uid} MajorLogin failed", "error")
-                    continue
-
-                auth_data = await DecRypTMajoRLoGin(login_resp)
-                token = auth_data.token
-                key = auth_data.key
-                iv = auth_data.iv
-                timestamp = auth_data.timestamp
-                account_uid = auth_data.account_uid
-                url = auth_data.url
-
-                login_raw = await GetLoginData(url, pyl, token)
-                if not login_raw:
-                    add_user_log(username, f"[-] Bot {bot_uid} GetLoginData failed", "error")
-                    continue
-
-                login_decoded = await DecRypTLoGinDaTa(login_raw)
-                online_ports = login_decoded.Online_IP_Port
-                online_ip, online_port = online_ports.split(":")
+                token = login_res["token"]
+                key = login_res["key"]
+                iv = login_res["iv"]
+                timestamp = login_res["timestamp"]
+                account_uid = login_res["bot_uid"]
+                online_ip = login_res["online_ip"]
+                online_port = login_res["online_port"]
 
                 auth_token = await xAuThSTarTuP(int(account_uid), token, int(timestamp), key, iv)
 
