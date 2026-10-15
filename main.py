@@ -1,5 +1,5 @@
 # ==========================================
-# FILE: main.py
+# FILE: main.py (Updated with bot_core.py logic & OB55 support)
 # ==========================================
 import asyncio
 import os
@@ -27,7 +27,7 @@ except ModuleNotFoundError as e:
     print("Ensure xC4.py, xHeaders.py, and Pb2 folder are in the same directory.\n")
     sys.exit(1)
 
-app = FastAPI(title="FREXY ULTRA SPAM - Dashboard")
+app = FastAPI(title="FREXY ULTRA SPAM - OB55 Dashboard")
 
 app.add_middleware(
     CORSMiddleware,
@@ -109,7 +109,7 @@ def load_accounts():
         print(f"[DEBUG] Error reading account.txt: {str(e)}")
     return accounts
 
-# =================== HEADERS & CRYPTO CONSTANTS ===================
+# =================== HEADERS & OB55 CRYPTO CONSTANTS ===================
 Hr = {
     'User-Agent': "Dalvik/2.1.0 (Linux; U; Android 11; ASUS_Z01QD Build/PI)",
     'Connection': "Keep-Alive",
@@ -118,7 +118,7 @@ Hr = {
     'Expect': "100-continue",
     'X-Unity-Version': "2018.4.11f1",
     'X-GA': "v1 1",
-    'ReleaseVersion': "OB54"
+    'ReleaseVersion': "OB55"
 }
 
 BADGE_VALUES = {
@@ -137,7 +137,7 @@ BADGE_NAMES = {
     "s5": "Pro Badge"
 }
 
-# =================== CRYPTO & NETWORK HELPERS ===================
+# =================== CRYPTO & NETWORK HELPERS (OB55 Updated) ===================
 async def encrypted_proto(encoded_hex):
     key = b'Yg&tc%DEuh6%Zc^8'
     iv = b'6oyZDr22E3ychjM%'
@@ -175,7 +175,7 @@ async def EncRypTMajoRLoGin(open_id, access_token):
     major_login.event_time = str(datetime.now())[:-7]
     major_login.game_name = "free fire"
     major_login.platform_id = 2
-    major_login.client_version = "1.126.2"
+    major_login.client_version = "1.132.1"  # OB55 Version updated from bot_core
     major_login.client_version_code = "2024010012"
     major_login.system_software = "Android OS 11 / API-30"
     major_login.system_hardware = "Handheld"
@@ -283,7 +283,7 @@ async def xAuThSTarTuP(TarGeT, token, timestamp, key, iv):
         headers = '0000000'
     return f"0115{headers}{uid_hex}{encrypted_timestamp}00000{encrypted_packet_length}{encrypted_packet}"
 
-# =================== PACKET CREATOR ===================
+# =================== PACKET CREATOR (bot_core merged logic) ===================
 async def request_join_with_badge(target_uid, badge_value, key, iv, region="IND"):
     try:
         avatar_id = int(await xBunnEr())
@@ -295,7 +295,7 @@ async def request_join_with_badge(target_uid, badge_value, key, iv, region="IND"
                 3: 1,
                 4: 1,
                 5: bytes([1, 7, 9, 10, 11, 18, 25, 26, 32]),
-                6: "TG:[C][B][FF0000] @Beotherjk",
+                6: "TG:[C][B][FF0000] @KANHAIYA_VIP",
                 7: 330,
                 8: 1000,
                 10: region.upper(),
@@ -375,7 +375,6 @@ async def run_unlimited_spam(username: str, accounts, target_uid: str, region: s
                 break
 
             try:
-                # Fixed function name error: GeNeRaTeAccEss instead of GeNeRaTeAccAccess
                 open_id, access_token = await GeNeRaTeAccEss(bot_uid, password)
                 if not open_id or not access_token:
                     continue
@@ -552,7 +551,6 @@ body {
 .log-line.warn { color: #ffaa00; }
 .log-line.info { color: #05d9e8; }
 
-/* Target Box Cards */
 .target-list-wrapper {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 15px; margin-top: 15px;
 }
@@ -578,7 +576,6 @@ body {
 <div class="toast-container" id="toastContainer"></div>
 
 <div class="container">
-  <!-- Auth Screen -->
   <div class="auth-wrapper" id="authScreen">
     <div class="auth-card">
       <h2>⚡ FREXY ULTRA SPAM</h2>
@@ -594,18 +591,16 @@ body {
     </div>
   </div>
 
-  <!-- Main System UI Dashboard -->
   <div id="mainDashboard" style="display: none;">
     <div class="header">
       <h1>⚡ FREXY ULTRA SPAM</h1>
-      <div class="subtitle">UNLIMITED MODE DASHBOARD</div>
+      <div class="subtitle">OB55 UNLIMITED MODE DASHBOARD</div>
       <div style="margin-top: 15px;">
         <span style="color: #05d9e8; font-size: 1.1rem;">User: <span id="sessUserDisplay" style="color:var(--primary); font-weight:bold;">-</span></span>
         <button class="btn btn-secondary" onclick="handleLogout()" style="width: auto; padding: 5px 15px; font-size: 0.8rem; margin-left: 15px;">Logout</button>
       </div>
     </div>
 
-    <!-- Admin Panel Control Section -->
     <div class="card" id="adminPanel" style="display: none; margin-bottom: 30px; border-color: #00ff88;">
       <div class="card-title" style="color:#00ff88;">🛠️ ADMIN CONTROL PANEL</div>
       <div style="display: flex; gap: 15px; flex-wrap: wrap;">
@@ -624,7 +619,6 @@ body {
     </div>
 
     <div class="main-grid">
-      <!-- Left: Spam Controller -->
       <div class="card">
         <div class="card-title">🚀 Launch Spam Session</div>
         <div style="margin-bottom: 15px;">
@@ -658,7 +652,6 @@ body {
         <button class="btn btn-primary" onclick="startSpam()">▶ Start Spam</button>
       </div>
 
-      <!-- Right: User Stat Display -->
       <div class="card">
         <div class="card-title">📊 User Stats</div>
         <div style="display: flex; flex-direction: column; gap: 15px;">
@@ -673,7 +666,6 @@ body {
         </div>
       </div>
 
-      <!-- Active Sessions & Player Banners -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-title" style="color: var(--secondary);">🔥 Active Spam Sessions</div>
         <div class="target-list-wrapper" id="runningTargetsContainer">
@@ -681,7 +673,6 @@ body {
         </div>
       </div>
 
-      <!-- System Logs -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-title">📡 Real-Time Console Logs</div>
         <div class="terminal" id="logTerminal"></div>
@@ -770,12 +761,10 @@ async function fetchStatus() {
     }
     const data = await res.json();
     
-    // Stats Update
     document.getElementById("statTotalPackets").textContent = data.total_packets;
     const rate = data.total_packets > 0 ? Math.round((data.success_count / data.total_packets) * 100) : 0;
     document.getElementById("statSuccessRate").textContent = rate + "%";
 
-    // Console logs
     const term = document.getElementById("logTerminal");
     term.innerHTML = "";
     data.logs.forEach(l => {
@@ -786,7 +775,6 @@ async function fetchStatus() {
     });
     term.scrollTop = term.scrollHeight;
 
-    // Render running target cards
     const container = document.getElementById("runningTargetsContainer");
     if(data.active_spams.length === 0) {
       container.innerHTML = `<p style="color: rgba(255,255,255,0.4); grid-column: 1/-1;">No active sessions.</p>`;
@@ -795,7 +783,6 @@ async function fetchStatus() {
       data.active_spams.forEach(t => {
         container.innerHTML += `
           <div class="target-card">
-            <!-- Dynamically pulling Free Fire player profile banner -->
             <img class="target-banner" src="https://nirob-free-fire-baner.vercel.app/profile?uid=${t.uid}" alt="Profile Banner" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x120/151530/ffffff?text=Banner+Loading...';">
             <h4 style="color:var(--secondary); margin-bottom:5px;">UID: ${t.uid}</h4>
             <div style="font-size:0.85rem; color:rgba(255,255,255,0.7); margin-bottom:10px;">
@@ -848,7 +835,6 @@ async function stopSpam(uid) {
   }
 }
 
-// Admin Panel Functions
 async function loadAdminUserList() {
   const res = await fetch("/admin/list_users");
   if(res.ok) {
@@ -894,7 +880,6 @@ async function deleteUser(username) {
   }
 }
 
-// Auto Refresh Status Check
 setInterval(fetchStatus, 3000);
 </script>
 </body>
@@ -915,7 +900,6 @@ async def logout(response: Response):
     response.delete_cookie("session_user")
     return {"status": "success"}
 
-# Admin Operations
 @app.post("/admin/create_user")
 async def create_user(new_user: str = Query(...), new_pass: str = Query(...), current_user: str = Depends(get_current_user)):
     users = load_users()
@@ -947,7 +931,6 @@ async def list_users(current_user: str = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Unauthorized access.")
     return [{"username": u, "role": info.get("role", "user")} for u, info in users.items()]
 
-# Spam Control APIs with Admin Limit Bypass
 @app.get("/spam/start")
 async def start_spam(
     target: str = Query(..., description="Target Player UID"),
@@ -966,14 +949,12 @@ async def start_spam(
     state = get_user_state(current_user)
     active_spams = state["active_spams"]
 
-    # Limit of 2 applied only to normal users, admin bypassing limit entirely
     if not is_admin and len(active_spams) >= 2:
         return {"status": "error", "message": "Limit reached: Regular users are restricted to 2 active sessions."}
 
     if target in active_spams:
         return {"status": "error", "message": "Spam session already active on this target."}
 
-    # Dynamic target insertion
     active_spams[target] = {
         "is_running": True,
         "region": region.upper(),
@@ -985,7 +966,6 @@ async def start_spam(
         "stop_requested": False
     }
 
-    # Start independent task
     asyncio.create_task(run_unlimited_spam(current_user, accounts, target, region.upper(), badges, fast_mode))
 
     return {
@@ -1037,7 +1017,7 @@ async def spam_status(current_user: str = Depends(get_current_user)):
 # =================== APPLICATION RUNNER ===================
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print("🔥 FREXY ULTRA SPAM SYSTEM STABLE")
+    print("🔥 FREXY ULTRA SPAM SYSTEM STABLE (OB55)")
     print("🚀 Auto Multi-User Mode Activated")
     print("📡 Default Admin -> User: frexy | Pass: frexyspam")
     print("="*60 + "\n")
