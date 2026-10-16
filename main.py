@@ -796,7 +796,7 @@ async function fetchStatus() {
         container.innerHTML += `
           <div class="target-card">
             <!-- Dynamically pulling Free Fire player profile banner -->
-            <img class="target-banner" src="https://nirob-free-fire-baner.vercel.app/profile?uid=${t.uid}" alt="Profile Banner" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x120/151530/ffffff?text=Banner+Loading...';">
+            <img class="target-banner" src="https://ffinfo.gamingsymoon.com/banner?uid=${t.uid}" alt="Profile Banner" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x120/151530/ffffff?text=Banner+Loading...';">
             <h4 style="color:var(--secondary); margin-bottom:5px;">UID: ${t.uid}</h4>
             <div style="font-size:0.85rem; color:rgba(255,255,255,0.7); margin-bottom:10px;">
               <div>Region: ${t.region}</div>
